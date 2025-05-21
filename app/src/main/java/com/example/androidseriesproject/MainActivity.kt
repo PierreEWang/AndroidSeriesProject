@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
     
     // UI state sealed class to represent different states
     sealed class UiState {
-        object Loading : UiState()
+        data object Loading : UiState()
         data class Success(val shows: List<TvShow>) : UiState()
         data class Error(val message: String) : UiState()
     }
