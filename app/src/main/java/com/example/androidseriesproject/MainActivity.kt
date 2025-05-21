@@ -11,12 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.androidseriesproject.test.ApiTest
 import com.example.androidseriesproject.ui.theme.AndroidSeriesProjectTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Call the API test function when the app starts
+        ApiTest.testMostPopularShows()
+        
         setContent {
             AndroidSeriesProjectTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
