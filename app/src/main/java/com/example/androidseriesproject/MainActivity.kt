@@ -27,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.androidseriesproject.model.TvShow
-import com.example.androidseriesproject.model.TvShowResponse
 import com.example.androidseriesproject.repository.TvShowRepository
 import com.example.androidseriesproject.ui.theme.AndroidSeriesProjectTheme
 import com.example.androidseriesproject.util.Resource
@@ -42,7 +41,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tvShowRepository: TvShowRepository
     
-    private val TAG = "MainActivity"
+    private val tag = "MainActivity"
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,26 +101,26 @@ class MainActivity : ComponentActivity() {
             tvShowRepository.getMostPopularShows().collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        Log.d(TAG, "Loading TV shows...")
+                        Log.d(tag, "Loading TV shows...")
                         onStateChanged(UiState.Loading)
                     }
                     is Resource.Success -> {
                         val shows = result.data
-                        Log.d(TAG, "Successfully loaded ${shows.tvShows.size} TV shows")
-                        Log.d(TAG, "Page: ${shows.page}, Total pages: ${shows.pages}, Total: ${shows.total}")
+                        Log.d(tag, "Successfully loaded ${shows.tvShows.size} TV shows")
+                        Log.d(tag, "Page: ${shows.page}, Total pages: ${shows.pages}, Total: ${shows.total}")
                         
                         // Log the first few shows
                         shows.tvShows.take(3).forEach { show ->
-                            Log.d(TAG, "Show: ${show.name}, ID: ${show.id}, Network: ${show.network}")
+                            Log.d(tag, "Show: ${show.name}, ID: ${show.id}, Network: ${show.network}")
                         }
                         
                         // Update UI state with the loaded shows
                         onStateChanged(UiState.Success(shows.tvShows))
                     }
                     is Resource.Error -> {
-                        Log.e(TAG, "Error loading TV shows: ${result.message}")
+                        Log.e(tag, "Error loading TV shows: ${result.message}")
                         result.exception?.let {
-                            Log.e(TAG, "Exception: ${it.message}", it)
+                            Log.e(tag, "Exception: ${it.message}", it)
                         }
                         onStateChanged(UiState.Error(result.message))
                     }
