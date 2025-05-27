@@ -1,8 +1,9 @@
-package com.example.androidseriesproject.viewmodel
+/*package com.example.androidseriesproject.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidseriesproject.data.repository.ShowRepository
+import com.example.androidseriesproject.repository.TvShowRepository
+import com.example.androidseriesproject.model.TvShowResponse
 import com.example.androidseriesproject.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShowViewModel @Inject constructor(
-	private val repository: ShowRepository
+	private val repository: TvShowRepository
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -25,11 +26,12 @@ class ShowViewModel @Inject constructor(
 	private fun fetchShows() {
 		viewModelScope.launch {
 			try {
-				val result = repository.getPopularShows()
-				_uiState.value = UiState.Success(result.tv_shows)
+				val result = repository.getMostPopularShows()
+				_uiState.value = UiState.Success(result.tvShows)
 			} catch (e: Exception) {
 				_uiState.value = UiState.Error("Erreur : ${e.localizedMessage}")
 			}
 		}
 	}
 }
+*/
