@@ -35,7 +35,24 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideShowRepository(apiService: ShowApiService): ShowRepository {
-        return ShowRepositoryImpl(apiService)
+    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://www.episodate.com/api/") // EpisoDate API base URL
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): com.example.androidseriesproject.api.ApiService {
+        return retrofit.create(com.example.androidseriesproject.api.ApiService::class.java)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideTvShowRepository(apiService: com.example.androidseriesproject.api.ApiService): com.example.androidseriesproject.repository.TvShowRepository {
+        return com.example.androidseriesproject.repository.TvShowRepositoryImpl(apiService)
     }
 }
+
