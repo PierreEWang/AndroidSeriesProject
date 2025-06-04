@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
                             TvShowList(
                                 shows = (uiState as UiState.Success).shows,
                                 modifier = Modifier.padding(innerPadding)
-                                ShowListScreen(modifier = Modifier.padding(innerPadding))
+//                                ShowListScreen(modifier = Modifier.padding(innerPadding))
                             )
                         }
                         is UiState.Error -> {

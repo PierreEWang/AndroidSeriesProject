@@ -24,4 +24,5 @@ interface TvShowRepository {
      * @return Flow of Resource wrapping the TV show
      */
     fun getTvShowById(id: Int): Flow<Resource<TvShow>>
+    fun getPopularShows()
 }

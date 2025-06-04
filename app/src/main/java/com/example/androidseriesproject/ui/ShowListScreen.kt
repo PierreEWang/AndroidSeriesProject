@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.androidseriesproject.viewmodel.ShowViewModel
+import com.example.androidseriesproject.model.TvShow
 
 @Composable
 fun ShowListScreen(
@@ -32,7 +33,7 @@ fun ShowListScreen(
 				items(shows) { show ->
 					Column(modifier = Modifier.padding(8.dp)) {
 						Image(
-							painter = rememberAsyncImagePainter(show.image_thumbnail_path),
+							painter = rememberAsyncImagePainter(show.imageThumbnailPath),
 							contentDescription = show.name,
 							modifier = Modifier
 								.fillMaxWidth()

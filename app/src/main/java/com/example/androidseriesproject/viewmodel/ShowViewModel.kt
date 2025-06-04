@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class ShowViewModel @Inject constructor(
 	private val repository: TvShowRepository
@@ -28,14 +29,15 @@ class ShowViewModel @Inject constructor(
 	private fun fetchShows() {
 		viewModelScope.launch {
 			try {
-				val result = repository.getMostPopularShows()
-				_uiState.value = UiState.Success(result.tvShows)
+				val result = repository.getPopularShows()  // <-- ici le nom correct
+				//_uiState.value = UiState.Success(result.tvShows) //TODO
 
 			} catch (e: Exception) {
 				_uiState.value = UiState.Error("Erreur : ${e.localizedMessage}")
 			}
 		}
 	}
+
 }
 
 

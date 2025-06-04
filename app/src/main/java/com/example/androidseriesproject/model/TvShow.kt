@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * Data class representing a TV show from the EpisoDate API
  */
+
+
 data class TvShow(
     @SerializedName("id")
     val id: Int,
@@ -33,3 +35,4 @@ data class TvShow(
     @SerializedName("image_thumbnail_path")
     val imageThumbnailPath: String
 )
+
