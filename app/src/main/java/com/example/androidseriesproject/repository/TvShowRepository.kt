@@ -11,15 +11,15 @@ import kotlinx.coroutines.flow.Flow
 interface TvShowRepository {
     /**
      * Get the most popular TV shows with pagination
-     * 
+     *
      * @param page The page number to fetch
      * @return Flow of Resource wrapping the TV show response
      */
     fun getMostPopularShows(page: Int = 1): Flow<Resource<TvShowResponse>>
-    
+
     /**
      * Get a specific TV show by ID
-     * 
+     *
      * @param id The ID of the TV show to fetch
      * @return Flow of Resource wrapping the TV show
      */
