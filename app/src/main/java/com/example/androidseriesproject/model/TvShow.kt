@@ -8,28 +8,36 @@ import com.google.gson.annotations.SerializedName
 data class TvShow(
     @SerializedName("id")
     val id: Int,
-    
+
     @SerializedName("name")
     val name: String,
-    
+
     @SerializedName("permalink")
     val permalink: String,
-    
+
     @SerializedName("start_date")
-    val startDate: String,
-    
+    val startDate: String? = null,
+
     @SerializedName("end_date")
-    val endDate: String?,
-    
+    val endDate: String? = null,
+
     @SerializedName("country")
-    val country: String,
-    
+    val country: String? = null,
+
     @SerializedName("network")
-    val network: String,
-    
+    val network: String? = null,
+
     @SerializedName("status")
-    val status: String,
-    
+    val status: String? = null,
+
     @SerializedName("image_thumbnail_path")
-    val imageThumbnailPath: String
-)
+    val imageThumbnailPath: String? = null
+) {
+    // Propriétés avec valeurs par défaut pour éviter les null
+    fun getDisplayName(): String = name
+    fun getDisplayNetwork(): String = network ?: "Réseau inconnu"
+    fun getDisplayStatus(): String = status ?: "Statut inconnu"
+    fun getDisplayCountry(): String = country ?: "Pays inconnu"
+    fun getDisplayStartDate(): String = startDate ?: "Date inconnue"
+    fun getImageUrl(): String = imageThumbnailPath ?: ""
+}
