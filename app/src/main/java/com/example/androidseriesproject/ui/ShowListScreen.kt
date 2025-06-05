@@ -26,6 +26,7 @@ fun ShowListScreen(
 	viewModel: ShowViewModel = hiltViewModel()
 ) {
 	val state by viewModel.uiState.collectAsState()
+	val gridState = rememberLazyGridState()
 
 	when (state) {
 		is UiState.Loading -> {
@@ -45,18 +46,43 @@ fun ShowListScreen(
 		}
 
 		is UiState.Success -> {
-			val shows = (state as UiState.Success).shows
+			val successState = state as UiState.Success
+
 			LazyVerticalGrid(
 				columns = GridCells.Fixed(2),
+				state = gridState,
 				modifier = modifier.fillMaxSize(),
 				contentPadding = PaddingValues(8.dp),
 				horizontalArrangement = Arrangement.spacedBy(8.dp),
 				verticalArrangement = Arrangement.spacedBy(8.dp)
 			) {
-				items(shows) { show ->
+				// Afficher toutes les séries
+				items(successState.shows) { show ->
 					TvShowItem(show = show)
 				}
+
+				// Afficher le spinner de chargement en bas si on charge plus de contenu
+				if (successState.isLoadingMore) {
+					item(span = { GridItemSpan(2) }) { // Prend toute la largeur
+						LoadingMoreItem()
+					}
+				}
+
+				// Message de fin si on a atteint la dernière page
+				if (!successState.hasMorePages && !successState.isLoadingMore) {
+					item(span = { GridItemSpan(2) }) {
+						EndOfListItem(totalShows = successState.shows.size)
+					}
+				}
 			}
+
+			// Détecter quand on approche de la fin pour charger plus
+			InfiniteScrollDetector(
+				listState = gridState,
+				buffer = 3, // Déclenche le chargement 3 éléments avant la fin
+				onLoadMore = { viewModel.loadMoreShows() },
+				hasMoreData = successState.hasMorePages && !successState.isLoadingMore
+			)
 		}
 
 		is UiState.Error -> {
@@ -64,7 +90,10 @@ fun ShowListScreen(
 				modifier = modifier.fillMaxSize(),
 				contentAlignment = Alignment.Center
 			) {
-				Column(horizontalAlignment = Alignment.CenterHorizontally) {
+				Column(
+					horizontalAlignment = Alignment.CenterHorizontally,
+					modifier = Modifier.padding(16.dp)
+				) {
 					Text(
 						text = "Erreur de chargement",
 						style = MaterialTheme.typography.titleMedium,
@@ -77,8 +106,88 @@ fun ShowListScreen(
 						color = MaterialTheme.colorScheme.error,
 						textAlign = TextAlign.Center
 					)
+					Spacer(modifier = Modifier.height(16.dp))
+					Button(
+						onClick = { viewModel.retry() }
+					) {
+						Text("Réessayer")
+					}
 				}
 			}
+		}
+	}
+}
+
+@Composable
+fun InfiniteScrollDetector(
+	listState: LazyGridState,
+	buffer: Int = 2,
+	onLoadMore: () -> Unit,
+	hasMoreData: Boolean
+) {
+	val loadMore = remember {
+		derivedStateOf {
+			val layoutInfo = listState.layoutInfo
+			val totalItemsNumber = layoutInfo.totalItemsCount
+			val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+			hasMoreData && lastVisibleItemIndex > (totalItemsNumber - buffer)
+		}
+	}
+
+	LaunchedEffect(loadMore.value) {
+		if (loadMore.value) {
+			onLoadMore()
+		}
+	}
+}
+
+@Composable
+fun LoadingMoreItem() {
+	Box(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(16.dp),
+		contentAlignment = Alignment.Center
+	) {
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.Center
+		) {
+			CircularProgressIndicator(
+				modifier = Modifier.size(24.dp),
+				strokeWidth = 2.dp
+			)
+			Spacer(modifier = Modifier.width(12.dp))
+			Text(
+				text = "Chargement...",
+				style = MaterialTheme.typography.bodyMedium,
+				color = MaterialTheme.colorScheme.onSurfaceVariant
+			)
+		}
+	}
+}
+
+@Composable
+fun EndOfListItem(totalShows: Int) {
+	Box(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(16.dp),
+		contentAlignment = Alignment.Center
+	) {
+		Column(horizontalAlignment = Alignment.CenterHorizontally) {
+			Text(
+				text = "🎬 Fin de la liste",
+				style = MaterialTheme.typography.titleSmall,
+				fontWeight = FontWeight.Bold
+			)
+			Spacer(modifier = Modifier.height(4.dp))
+			Text(
+				text = "$totalShows séries affichées",
+				style = MaterialTheme.typography.bodySmall,
+				color = MaterialTheme.colorScheme.onSurfaceVariant
+			)
 		}
 	}
 }
